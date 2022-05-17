@@ -1,0 +1,351 @@
+---
+title: "DAB 502 : LAB 1 "
+output:
+  html_document: default
+  pdf_document: default
+---
+
+## Pallavi Ravikumar Menon
+
+### I. Load packages
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(here)
+```
+
+
+*************************************************************************************************************
+
+### II. Exercises
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q1.png)
+
+</center>
+
+
+```{r}
+kobe_basket <- read.csv("kobe_HM.csv")
+```
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q2.png)
+
+</center>
+
+
+
+```{r}
+head(kobe_basket,9) 
+```
+
+
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q3.png)
+
+</center>
+
+
+
+```{r}
+calc_streak <- function(x){
+  y <- rep(0,length(x))
+  y[x == "H"] <- 1
+  y <- c(0, y, 0)
+  wz <- which(y == 0)
+  streak <- diff(wz) - 1
+  return(streak)
+}
+
+kobe_streak <- tibble(length = calc_streak(kobe_basket$shot))
+
+```
+
+
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q4.png)
+
+</center>
+
+
+
+```{r}
+ggplot(kobe_streak,aes(length)) + 
+  geom_bar() +
+  ggtitle("Distribution of streak lengths") + theme_minimal() + theme(plot.title = element_text (hjust = 0.5)) 
+```
+
+
+
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q5.png)
+
+</center>
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**1) The distribution is unimodal and right skewed.**
+
+</div>
+
+
+```{r}
+boxplot(kobe_streak)
+```
+
+
+```
+The following questions are answered based on the above plot:
+```
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**2) Kobe's typical streak length was 1.**
+
+</div>
+
+```{r}
+IQR(calc_streak(kobe_basket$shot))
+```
+
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**3) As observed from the plot above, Kobe's longest streak was basket was were 4.**
+
+</div>
+
+
+
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q6.png)
+
+</center>
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**As we can see after setting the seed and running the simulation of flipping the unfair coin 100 times. We get output table that shows the number of flips that came up as heads are 16**
+
+</div>
+
+
+
+
+```{r}
+coin_outcomes <- c("heads", "tails")
+
+set.seed(45686) 
+
+sim_unfair_coin <- sample(coin_outcomes, size = 100, replace = TRUE, prob = c(0.2, 0.8))
+
+table(sim_unfair_coin)
+```
+
+
+
+
+*************************************************************************************************************
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q7.png)
+
+</center>
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**Former function :**
+
+</div>
+
+
+```{r}
+shot_outcomes <- c("H", "M")
+sim_basket <- sample(shot_outcomes, size = 1, replace = TRUE)
+```
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**The changes have to be made to the former function to reflect shooting percentage of 45%**
+
+</div>
+
+```{r}
+outcomes <- c("H", "M")
+sim_basket <- sample(outcomes, size = 133, replace=TRUE, prob = c(0.45,0.55))
+
+```
+
+
+```{r}
+sim_basket
+```
+
+```{r}
+table(sim_basket)
+```
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q8.png)
+
+</center>
+
+
+```{r}
+sim_streak <- calc_streak(sim_basket)
+sim_streak
+```
+
+
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q9.png)
+
+</center>
+
+```
+We make a bar plot to understand the distribution
+```
+
+```{r}
+barplot(table(sim_streak))
+```
+
+</center>
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**1) The distribution is unimodal and right skewed.**
+
+</div>
+
+
+
+```{r}
+boxplot(sim_streak)
+```
+
+
+```
+The following questions are answered based on the above plot:
+```
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**2) Typical streak length of simulated independent shooter is 1.**
+
+</div>
+
+```{r}
+IQR(calc_streak(sim_basket))
+```
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**3) As observed from the plot above, longest streak of the simulated independent player is 6.**
+
+</div>
+
+
+
+*************************************************************************************************************
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q10.png)
+
+</center>
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**If i run the simulation again, i expect the results to be slight different as the seed value is not set.However, given the probability of 0.45% and 133 shots it could be closer to the value obtained with the aboove simulation.**
+
+</div>
+
+
+
+
+*************************************************************************************************************
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB1\Data\Q11.png)
+
+</center>
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**The streak length observed for both Kobe and independent player differs even though the distribution for both are the same i.e unimodal and right skewed. Also difference in the streak length proves both the events are independent of each other. Hence, there aren't enough evidence that the hot hand model fits Kobe’s shooting patterns.**
+
+</div>
+
+

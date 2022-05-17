@@ -1,0 +1,480 @@
+---
+title: "DAB 502 : LAB 2 "
+output:
+  html_document: default
+---
+
+## Pallavi Ravikumar Menon
+
+### I. Load packages
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(here)
+library(ggplot2)
+library(gridExtra)
+```
+
+
+### 2. Read Data
+
+```{r}
+ames <- read_csv(here('data', 'ames.csv'))
+
+```
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q1.png)
+
+</center>
+
+```{r}
+area <- ames$area
+price <- ames$price
+
+summary(area)
+```
+
+```{r}
+plot1 <- ggplot(ames, aes(area)) + geom_histogram(binwidth=250) +
+         ggtitle("Distribution of area") + theme_minimal() + theme(plot.title = element_text (hjust = 0.5)) 
+plot1
+```
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q2.png)
+
+</center>
+
+
+```{r}
+ames %>%
+  summarize(mu = mean(area), pop_med = median(area), 
+            sigma = sd(area), pop_iqr = IQR(area),
+            pop_min = min(area), pop_max = max(area),
+            pop_q1 = quantile(area, 0.25),  # first quartile, 25th percentile
+            pop_q3 = quantile(area, 0.75))  # third quartile, 75th percentile
+```
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**1) The distribution is right skewed.** <br>
+**2) The relevant summary staistics are;** <br>
+  **Mean = 1500**<br>
+  **Median = 1442**<br>
+  **Min = 334**<br>
+  **Max= 5642**
+
+</div>
+
+
+
+*************************************************************************************************************
+*************************************************************************************************************
+
+## The unknown sampling distribution
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q3.png)
+
+</center>
+
+```{r}
+samp1 <- sample_n(ames,50)
+```
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q4.png)
+
+</center>
+
+```{r}
+samp1 %>%
+  summarize(samp_mean = mean(area), samp_med = median(area), 
+            samp_iqr = IQR(area),
+            samp_min = min(area), samp_max = max(area),
+            samp_q1 = quantile(area, 0.25), 
+            samp_q3 = quantile(area, 0.75))
+```
+
+```{r}
+plot2 <- ggplot(samp1, aes(area)) + geom_histogram(binwidth=250) +
+         ggtitle("Distribution of area for sampled data") + theme_minimal() + theme(plot.title = element_text (hjust = 0.5)) 
+plot2
+```
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**1) The distribution of area for the sampled data is right skewed.** <br>
+**2) The relevant summary staistics are;** <br>
+  **Mean = 1491**<br>
+  **Median = 1452**<br>
+  **Min = 833**<br>
+  **Max= 2596**
+
+</div>
+
+
+*************************************************************************************************************
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q5.png)
+
+</center>
+
+```{r}
+x <- mean(samp1$area)
+sprintf("%f is the mean area of the homes in this sample of 50. ", x)
+
+```
+
+
+*************************************************************************************************************
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q6.png)
+
+</center>
+
+
+```{r}
+y <- mean(ames$area)
+sprintf("%f  is the mean area of all the homes in our population. ", y)
+
+```
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q7.png)
+
+</center>
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**write theory**
+
+</div>
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q8.png)
+
+</center>
+
+
+```{r}
+samp2 <- sample_n(ames,50)
+z <- mean(samp2$area)
+sprintf("%f  is the mean area of all the homes in sample 2. ", z)
+```
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**Compared to mean of sample 1, the mean fo sample 2 is greater than sample 1**
+
+</div>
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q9.png)
+
+</center>
+
+
+```{r}
+
+samp100 <- sample_n(ames,100)
+
+samp1000 <- sample_n(ames,1000)
+
+a <- mean(samp100$area)
+b <- mean(samp1000$area)
+
+sprintf("%f  is the mean area of all the homes in sample 100 ", a)
+
+sprintf("%f  is the mean area of all the homes in sample 1000. ", b)
+
+
+```
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**After calculating mean for both sample size. The mean value for sample of size 1000 is accurate as  it becomes more representative of the population mean.However, every time we take a random sample we get a different sample mean. **
+
+</div>
+
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q10.png)
+
+</center>
+
+
+
+```{r}
+sample_means50 <- tibble(sample_means = 
+                           replicate(15000, 
+                                     mean(sample(ames$area, 50,replace = TRUE)))) 
+
+plot3 <- ggplot(sample_means50, aes(sample_means)) + geom_histogram(binwidth=60) +
+         ggtitle("Distribution of area for sample means 50") + theme_classic() + theme(plot.title = element_text (hjust = 0.5)) 
+plot3
+
+```
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q11.png)
+
+</center>
+
+How many elements are there in sample_means50? Describe the sampling distribution, and be sure to specifically note its center.
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**There are 15000 observations in sample_means50. **
+
+</div>
+
+
+```{r}
+qqnorm(sample_means50$sample_means)
+qqline(sample_means50)
+```
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**The sampling distribution is almost perfectly normal as can be seen on the qqplot below.** 
+
+</div>
+
+
+*************************************************************************************************************
+*************************************************************************************************************
+
+
+## Interlude :  sampling distribution
+
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q12.png)
+
+</center>
+
+
+```{r}
+sample_means_small <- tibble(sample_means = 
+                           replicate(25, 
+                                     mean(sample(ames$area, 10,replace = TRUE)))) 
+
+plot4 <- ggplot(sample_means_small, aes(sample_means)) + geom_histogram(binwidth=60) +
+         ggtitle("Distribution of area for sample means small") + theme_classic() + theme(plot.title = element_text (hjust = 0.5)) 
+plot4
+  
+```
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**Each observation in the variable sample_means small represents the mean area for of a random sample from the main dataset.  ** 
+
+</div>
+
+
+*************************************************************************************************************
+*************************************************************************************************************
+
+
+## Sample size and sampling distribution
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q13.png)
+
+</center>
+
+
+```{r}
+
+sample_means_10 <- tibble(sample_means = 
+                           replicate(5000, 
+                                     mean(sample(ames$area,10,replace = TRUE)))) 
+sample_means_50 <- tibble(sample_means = 
+                           replicate(5000, 
+                                     mean(sample(ames$area,50,replace = TRUE))))
+sample_means_100 <- tibble(sample_means = 
+                           replicate(5000, 
+                                     mean(sample(ames$area,100,replace = TRUE)))) 
+
+plot5 <- ggplot(sample_means_10, aes(sample_means)) + geom_histogram(binwidth=60) +
+         ggtitle("Distribution of area for sample means 10") + theme_classic() + theme(plot.title = element_text (hjust = 0.5)) 
+
+plot6 <- ggplot(sample_means_50, aes(sample_means)) + geom_histogram(binwidth=60) +
+         ggtitle("Distribution of area for sample means 50") + theme_classic() + theme(plot.title = element_text (hjust = 0.5)) 
+
+plot7 <- ggplot(sample_means_100, aes(sample_means)) + geom_histogram(binwidth=60) +
+         ggtitle("Distribution of area for sample means 100") + theme_classic() + theme(plot.title = element_text (hjust = 0.5)) 
+
+
+grid.arrange(plot5, plot6, plot7)
+```
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**The plots for sample size of 10, 50 and 100 can be seen. We can obseve that with an increase in size of sample size the spread of the data is reduced and it gets closer to the true population mean. ** 
+
+</div>
+
+
+*************************************************************************************************************
+*************************************************************************************************************
+
+
+## More Practice
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q14.png)
+
+</center>
+
+
+```{r}
+samp_price <- sample_n(ames,15)
+
+q <- mean(samp_price$price)
+sprintf("%f is the best point estimate of the population mean of prices of homes ", q)
+
+```
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q15.png)
+
+</center>
+
+
+```{r}
+
+sample_means15 <- tibble(sample_means = 
+                           replicate(2000, 
+                                     mean(sample(ames$price,15,replace = TRUE)))) 
+
+plot8 <- ggplot(sample_means15, aes(sample_means)) + geom_histogram() +
+         ggtitle("Distribution of price for sample means 15") + theme_classic() + theme(plot.title = element_text (hjust = 0.5)) 
+plot8
+```
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**The distribution is unimodal and right skewed.** 
+
+</div>
+
+
+```{r}
+d <- mean(sample_means15$sample_means)
+e <- mean(price)
+
+sprintf("%f  estimated mean home price of the population for sample size 15 ", d)
+
+sprintf("%f  actual mean home price of the population. ",e)
+
+```
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q16.png)
+
+</center>
+
+
+```{r}
+
+sample_means150 <- tibble(sample_means = 
+                           replicate(2000, 
+                                     mean(sample(ames$price,150,replace = TRUE)))) 
+
+plot9 <- ggplot(sample_means150, aes(sample_means)) + geom_histogram() +
+         ggtitle("Distribution of price for sample means 15") + theme_classic() + theme(plot.title = element_text (hjust = 0.5)) 
+plot9
+```
+
+```{r}
+f <- mean(sample_means150$sample_means)
+g <- mean(price)
+
+sprintf("%f  estimated mean home price of the population for sample size 150 ", f)
+
+sprintf("%f  actual mean home price of the population. ",g)
+
+```
+
+
+*************************************************************************************************************
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB2\Data\Q17.png)
+
+</center>
+
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**1) Comparing the distribution for price for both the sampling size, it is clearly seen the spread for sampling size 150 is smaller.** <br>
+**2) Also looking at the estimated price means for both distribution we can easily determine that increasing the sample size is more preferred as it estimates closely to the true mean value. **
+
+</div>

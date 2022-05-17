@@ -1,0 +1,269 @@
+---
+title: 'DAB 502 : LAB 3 '
+output:
+  html_document: default
+---
+
+## Pallavi Ravikumar Menon
+
+### I. Load packages
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(here)
+library(ggplot2)
+library(oilabs)
+```
+
+
+### 2. Read Data
+
+```{r}
+nc <- read_csv(here('data', 'ncbirths.csv'))
+```
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB3\Data\Q2.png)
+</center>
+
+```{r}
+dim(nc)
+```
+```{r}
+head(nc)
+```
+
+
+```{r}
+summary(nc)
+```
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**1) We can see there are 1000 cases and 13 variables in the dataset.**<br>
+**2) The summary tells us the various categorical and numerical variables**<br>
+
+</div>
+
+
+
+*************************************************************************************************************
+*************************************************************************************************************
+
+## Exploratory data analysis
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB3\Data\Q3.png)
+
+</center>
+
+```{r}
+summary(nc$gained)
+```
+
+
+*************************************************************************************************************
+
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB3\Data\Q4.png)
+
+</center>
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**After reading the above ssummary statistics,there are 27 missing weight gain data.**
+
+</div>
+
+
+*************************************************************************************************************
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB3\Data\Q5.png)
+
+</center>
+
+```{r}
+plot1 <- ggplot(nc, aes(habit,weight)) + geom_boxplot() +
+         ggtitle("Box plot for Habits and Weights") + theme_gray() + labs(x = "Habit",  y = "Weight")+ theme(plot.title = element_text (hjust = 0.5)) 
+plot1
+```
+
+
+</center>
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**As we can see from the plot the nonsmoker distribution is extremely skewed and has more number of outlier, whereas there are few outlier for mothers who have smoking habits. We can also see there are null values in the dataset. **
+
+
+</div>
+
+
+*************************************************************************************************************
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB3\Data\Q6.png)
+
+</center>
+
+
+
+```{r}
+by(nc$weight, nc$habit, summary)
+```
+
+```{r}
+#Removing null values from "habit" column
+nc <- nc[!nc$habit == "null", ] 
+
+```
+
+```{r}
+#calculating the mean weight
+nc %>%
+  group_by(habit) %>%
+  summarise(mean_weight = mean(weight),
+            Standard_deviation = sd(weight))
+```
+
+*************************************************************************************************************
+*************************************************************************************************************
+
+
+## Inference
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB3\Data\Q7.png)
+
+</center>
+
+
+</center>
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**As per the observation till now we can see that the samples within each group are independent . Also the sample sizes are large enough and the skewness wooul not impact the results.**
+
+</div>
+
+
+```{r}
+# Computing the group size with n()
+nc %>%
+   group_by(habit) %>%
+   summarise(group_size = n())
+
+```
+
+
+*************************************************************************************************************
+
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB3\Data\Q8.png)
+
+</center>
+
+
+
+</center>
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**H0: There is no difference between the mean weights of children born from smoking mothers and non-smoking mothers.**<br>
+
+**HA: There is a difference between the mean weights of children born from smoking mothers and non-smoking mothers.**<br>
+
+</div>
+
+
+```{r}
+inference(y = weight, x = habit, data = nc, statistic = "mean", type = "ht", null = 0, 
+          alternative = "twosided", method = "theoretical")
+```
+
+
+
+*************************************************************************************************************
+
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB3\Data\Q9.png)
+
+</center>
+
+
+```{r}
+μns <- 7.1443
+μs <- 6.8287
+
+point_estimate <- μns - μs
+point_estimate
+```
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**According to the output of inference, we are 95 % confident that average weight of babies born to mothers who smoke is between 0.5803 and 0.0508 pounds. The point estimate would be the difference of means og both non smoking and smoking that is around 0.3156.**
+
+</div>
+
+
+*************************************************************************************************************
+
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB3\Data\Q10.png)
+
+</center>
+
+<style>
+div.LightBlue { background-color:#8ac7db; border-radius:5px; padding: 20px;}
+</style>
+<div class = "LightBlue">
+
+**The standard error is 0.13379 based on the above inference**
+
+</div>
+
+
+*************************************************************************************************************
+
+
+<center>
+![](C:\Users\palla\OneDrive\Desktop\502\Projects\LAB3\Data\Q11.png)
+
+</center>
+
+```{r}
+inference(y = weight, x = habit, data = nc, statistic = "mean", type = "ci", 
+          method = "theoretical", order = c("smoker","nonsmoker"))
+
+```
